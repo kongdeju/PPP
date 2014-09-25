@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+my $input =shift;
+`perl /home/kdj/PPP/prob_design/bin/Region_select1.pl $input`;                    	# *.regions
+print "step one: region selecting done \n";
+`sh /home/kdj/PPP/prob_design/bin/seq_out.sh`;             			# *.seq
+`sh /home/kdj/PPP/prob_design/bin/primer_probe.sh`;					# *.p1 *.p2 *.probe
+print "step two: primers probe selecting done\n";
+`sh /home/kdj/PPP/prob_design/bin/primer_probe_blast.sh $input`;
+print "step three: Blasting is over\n";
+system "sh /home/kdj/PPP/prob_design/bin/Bsp_all_to_xls.sh";
+print "step four: Bsp to xls done\n";
+`rm *.bsp`;
+`sh /home/kdj/PPP/prob_design/bin/seq_out2.sh`	;				# *.seq2
+`perl /home/kdj/PPP/prob_design/bin/paste_seq_xls.pl`;					# #.out2
+print "step five: is  done\n";
+`sh /home/kdj/PPP/prob_design/bin/ppp_sort_uniq.sh`;
+print "step six: sorting and uniqing is done\n";
+`perl /home/kdj/PPP/prob_design/bin/paste_p1p2.pl`;
+print "step seven: HEBING is done\n";
+`sh /home/kdj/PPP/prob_design/bin/rank_primer_probe.sh`;
+print "step eight: Ranking is done\n";
+`sh /home/kdj/PPP/prob_design/bin/ouput.sh`;
+`sh /home/kdj/PPP/prob_design/bin/final.sh`;
+print "step final: is done\nNow I will automatically select  the ppp to continue next step\n";
+`mkdir txt`;
+`cp *.txt $input ./txt`;
+$dir = $ENV{'PWD'};
+chdir("${dir}/txt");
+`perl /home/kdj/PPP/prob_design/bin/stage2.pl $input`;
+print "My work is done\n";
